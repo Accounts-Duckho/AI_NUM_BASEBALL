@@ -1,5 +1,8 @@
 ﻿#include <stdio.h>
+#include <stdlib.h>
+#include <windows.h>
 #include "game.h"
+#include "deco.h"
 // WIN = 0, LOSE = 1
 // YES = 1, VERYHIGH = 2, HIGH = 3, NORMAL = 4, LOW = 5, SOLOW = 6 ,VERYLOW = 7, NO = 8
 struct num {
@@ -13,48 +16,143 @@ struct record {
   int last;
 };
 int main(void) {
-  printf("숫자야구 대결!\n");
-  printf("정해진 라운드까지 컴퓨터가 맞추지 못하면 당신의 승리\n");
-  printf("그 안에 맞추면 당신의 패배\n");
-  printf("숫자는 102~987 사이 중복없는 숫자들의 조합으로 해야합니다.\n");
+  system("mode con:cols=50 lines=15");
+  drawLine(50, '*');
+  printf("\n");
+  drawLine(1, '*');
+  addBlank(14);
+  printf("A.I와 숫자야구 대결");
+  addBlank(15);
+  drawLine(1, '*');
+  printf("\n");
+  drawLine(50, '*');
+  printf("\n");
+  drawLine(1, '*');
+  addBlank(2);
+  printf("[게임방법]");
+  addBlank(36);
+  drawLine(1, '*');
+  printf("\n");
+  drawLine(1, '*');
+  addBlank(4);
+  printf("수가 중복되지 않는 3자리수를 생각합니다.");
+  addBlank(4);
+  drawLine(1, '*');
+  printf("\n");
+  drawLine(1, '*');
+  addBlank(4);
+  printf("각 라운드마다 컴퓨터가 수를 출력합니다.");
+  addBlank(5);
+  drawLine(1, '*');
+  printf("\n");
+  drawLine(1, '*');
+  addBlank(4);
+  printf("생각한 수와 비교합니다.");
+  addBlank(21);
+  drawLine(1, '*');
+  printf("\n");
+  drawLine(1, '*');
+  addBlank(2);
+  printf("자리수까지 일치하면 S, 수만 일치하면 B입니다.");
+  addBlank(1);
+  drawLine(1, '*');
+  printf("\n");
+  drawLine(1, '*');
+  addBlank(2);
+  printf("[예시] 369->398 : 1S 1B");
+  addBlank(23);
+  drawLine(1, '*');
+  printf("\n");
+  drawLine(1, '*');
+  addBlank(4);
+  printf("10라운드까지 컴퓨터는 수를 맞춰나갑니다.");
+  addBlank(4);
+  drawLine(1, '*');
+  printf("\n");
+  drawLine(1, '*');
+  addBlank(4);
+  printf("그 안에 맞추면 컴퓨터의 승리이며");
+  addBlank(12);
+  drawLine(1, '*');
+  printf("\n");
+  drawLine(1, '*');
+  addBlank(4);
+  printf("그 안에 맞추지 못하면 유저의 승리입니다.");
+  addBlank(4);
+  drawLine(1, '*');
+  printf("\n");
+  drawLine(50, '*');
+  printf("\n");
   loadGame();
   return 0;
 }
 void loadGame(void) {
   int choice_start;
-  printf(" < 게임을 시작하려면 1번 종료하려면 2번을 입력해주세요. >\n");
+  addBlank(2);
+  printf("게임 시작은 1번, 종료는 2번을 입력\n");
   scanf("%d", &choice_start);
   if(choice_start==1) {
+    system("cls");
     startGame(NULL);
   }
   else if(choice_start==2) {
     return;
   }
   else {
+    drawLine(50, '*');
+    printf("\n");
     loadGame();
     return;
   }
   return;
 }
 void startGame(int* guess_answer) {
+  system("cls");
   static struct num num[10];
   static int round_strike[15]={0};
   static int round_ball[15]={0};
   static struct record record[50];
   static int count=1;
   int result_sum;
-  printf("[%dR]\n", count);
+  drawLine(50, '*');
+  printf("\n");
+  drawLine(1, '*');
+  addBlank(2);
+  printf("[%dR]", count);
   if(count==1) {
-    printf(" PC : 147 \n");
+    addBlank(4);
+    printf("PC : 147");
+    addBlank(30);
+    drawLine(1, '*');
+    printf("\n");
+    drawLine(50, '*');
+    printf("\n");
     record[count].first=1;
     record[count].middle=4;
     record[count].last=7;
-    printf(" 스트라이크와 볼의수를 입력해주세요.\n");
-    printf("(예시) 1s 1b -> 1 1\n");
-    printf("OUT은 0s 0b로 간주합니다.\n");
+    drawLine(1, '*');
+    addBlank(2);
+    printf("스트라이크와 볼의 수를 입력해주세요.");
+    addBlank(10);
+    drawLine(1, '*');
+    printf("\n");
+    drawLine(1, '*');
+    addBlank(2);
+    printf("(예시) 1s 1b -> 1 1");
+    addBlank(27);
+    drawLine(1, '*');
+    printf("\n");
+    drawLine(1, '*');
+    addBlank(2);
+    printf("OUT은 0s 0b로 간주합니다.");
+    addBlank(21);
+    drawLine(1, '*');
+    printf("\n");
+    drawLine(50, '*');
+    printf("\n");
     scanf("%d %d", &round_strike[count], &round_ball[count]);
     result_sum=round_strike[count]+round_ball[count];
-    if(result_sum<=6 && result_sum>=0) {
+    if(result_sum<=3 && result_sum>=0) {
       if(3>=round_strike[count] && 3>=round_ball[count]) {
         if(round_strike[count]>=0 && round_ball[count]>=0) {
           if(round_strike[count]==3) resultGame(LOSE);
@@ -93,8 +191,20 @@ void startGame(int* guess_answer) {
               startGame(NULL);
             }
             else {
-              printf("an ERROR OCCURED : BALL CANNOT BE MINUS\n");
-              printf("한 라운드 전으로 게임을 되돌립니다.\n");
+              drawLine(50, '*');
+              printf("\n");
+              drawLine(1, '*');
+              addBlank(2);
+              printf("ERROR : BALL CANNOT BE MINUS");
+              addBlank(18);
+              drawLine(1, '*');
+              printf("\n");
+              drawLine(1, '*');
+              addBlank(2);
+              printf("한 라운드 전으로 게임을 되돌립니다.");
+              addBlank(11);
+              drawLine(1, '*');
+              printf("\n");
               num[1].first=num[1].middle=num[1].last=0;
               num[4].first=num[4].middle=num[4].last=0;
               num[7].first=num[7].middle=num[7].last=0;
@@ -152,8 +262,20 @@ void startGame(int* guess_answer) {
               startGame(NULL);
             }
             else {
-              printf("an ERROR OCCURED : BALL CANNOT BE MINUS\n");
-              printf("한 라운드 전으로 게임을 되돌립니다.\n");
+              drawLine(50, '*');
+              printf("\n");
+              drawLine(1, '*');
+              addBlank(2);
+              printf("ERROR : BALL CANNOT BE MINUS");
+              addBlank(18);
+              drawLine(1, '*');
+              printf("\n");
+              drawLine(1, '*');
+              addBlank(2);
+              printf("한 라운드 전으로 게임을 되돌립니다.");
+              addBlank(11);
+              drawLine(1, '*');
+              printf("\n");
               num[1].first=num[1].middle=num[1].last=0;
               num[4].first=num[4].middle=num[4].last=0;
               num[7].first=num[7].middle=num[7].last=0;
@@ -226,8 +348,20 @@ void startGame(int* guess_answer) {
               startGame(NULL);
             }
             else {
-              printf("an ERROR OCCURED : BALL CANNOT BE MINUS\n");
-              printf("한 라운드 전으로 게임을 되돌립니다.\n");
+              drawLine(50, '*');
+              printf("\n");
+              drawLine(1, '*');
+              addBlank(2);
+              printf("ERROR : BALL CANNOT BE MINUS");
+              addBlank(18);
+              drawLine(1, '*');
+              printf("\n");
+              drawLine(1, '*');
+              addBlank(2);
+              printf("한 라운드 전으로 게임을 되돌립니다.");
+              addBlank(11);
+              drawLine(1, '*');
+              printf("\n");
               num[1].first=num[1].middle=num[1].last=0;
               num[4].first=num[4].middle=num[4].last=0;
               num[7].first=num[7].middle=num[7].last=0;
@@ -238,37 +372,99 @@ void startGame(int* guess_answer) {
           }
         }
         else {
-          printf("an ERROR OCCURED : STRIKE OR BALL CANNOT BE MINUS\n");
+          drawLine(50, '*');
+          printf("\n");
+          drawLine(1, '*');
+          addBlank(2);
+          printf("ERROR : STRIKE OR BALL CANNOT BE MINUS");
+          addBlank(8);
+          drawLine(1, '*');
+          printf("\n");
+          drawLine(1, '*');
+          addBlank(2);
+          printf("한 라운드 전으로 게임을 되돌립니다.");
+          addBlank(11);
+          drawLine(1, '*');
+          printf("\n");
           round_strike[count]=round_ball[count]=0;
           startGame(NULL);
           return;
         }
       }
       else {
-        printf("an ERROR OCCURED : STRIKE OR BALL CANNOT BE MORE THAN 3\n");
+        drawLine(50, '*');
+        printf("\n");
+        drawLine(1, '*');
+        addBlank(2);
+        printf("ERROR : STRIKE OR BALL CANNOT BE MORE THAN 3");
+        addBlank(2);
+        drawLine(1, '*');
+        printf("\n");
+        drawLine(1, '*');
+        addBlank(2);
+        printf("한 라운드 전으로 게임을 되돌립니다.");
+        addBlank(11);
+        drawLine(1, '*');
+        printf("\n");
         round_strike[count]=round_ball[count]=0;
         startGame(NULL);
         return;
       }
     }
     else {
-      printf("an ERROR OCCURED : STRIKE+BALL CANNOT BE MORE THAN 6, LESS THAN 0\n");
+      drawLine(50, '*');
+      printf("\n");
+      drawLine(1, '*');
+      addBlank(2);
+      printf("ERR : S+B CANNOT BE MORE THAN 6, LESS THAN 0");
+      addBlank(2);
+      drawLine(1, '*');
+      printf("\n");
+      drawLine(1, '*');
+      addBlank(2);
+      printf("한 라운드 전으로 게임을 되돌립니다.");
+      addBlank(11);
+      drawLine(1, '*');
+      printf("\n");
       round_strike[count]=round_ball[count]=0;
       startGame(NULL);
       return;
     }
   }
   else if(count==2) {
-    printf(" PC : 258 \n");
+    addBlank(4);
+    printf("PC : 258");
+    addBlank(30);
+    drawLine(1, '*');
+    printf("\n");
+    drawLine(50, '*');
+    printf("\n");
     record[count].first=2;
     record[count].middle=5;
     record[count].last=8;
-    printf(" 스트라이크와 볼의수를 입력해주세요.\n");
-    printf("(예시) 1s 1b -> 1 1\n");
-    printf("OUT은 0s 0b로 간주합니다.\n");
+    drawLine(1, '*');
+    addBlank(2);
+    printf("스트라이크와 볼의 수를 입력해주세요.");
+    addBlank(10);
+    drawLine(1, '*');
+    printf("\n");
+    drawLine(1, '*');
+    addBlank(2);
+    printf("(예시) 1s 1b -> 1 1");
+    addBlank(27);
+    drawLine(1, '*');
+    printf("\n");
+    drawLine(1, '*');
+    addBlank(2);
+    printf("OUT은 0s 0b로 간주합니다.");
+    addBlank(21);
+    drawLine(1, '*');
+    printf("\n");
+    drawLine(50, '*');
+    printf("\n");
     scanf("%d %d", &round_strike[count], &round_ball[count]);
     result_sum=round_strike[count]+round_ball[count];
-    if(result_sum<=6 && result_sum>=0) {
+    if(result_sum<=3 && result_sum>=0) {
       if(3>=round_strike[count] && 3>=round_ball[count]) {
         if(round_strike[count]>=0 && round_ball[count]>=0) {
           if(round_strike[count]==3) resultGame(LOSE);
@@ -304,8 +500,20 @@ void startGame(int* guess_answer) {
               checkGame(num, record, count++, round_strike, round_ball);
             }
             else {
-              printf("an ERROR OCCURED : BALL CANNOT BE MINUS\n");
-              printf("한 라운드 전으로 게임을 되돌립니다.\n");
+              drawLine(50, '*');
+              printf("\n");
+              drawLine(1, '*');
+              addBlank(2);
+              printf("ERROR : BALL CANNOT BE MINUS");
+              addBlank(18);
+              drawLine(1, '*');
+              printf("\n");
+              drawLine(1, '*');
+              addBlank(2);
+              printf("한 라운드 전으로 게임을 되돌립니다.");
+              addBlank(11);
+              drawLine(1, '*');
+              printf("\n");
               num[2].first=num[2].middle=num[2].last=0;
               num[5].first=num[5].middle=num[5].last=0;
               num[8].first=num[8].middle=num[8].last=0;
@@ -360,8 +568,20 @@ void startGame(int* guess_answer) {
               checkGame(num, record, count++, round_strike, round_ball);
             }
             else {
-              printf("an ERROR OCCURED : BALL CANNOT BE MINUS\n");
-              printf("한 라운드 전으로 게임을 되돌립니다.\n");
+              drawLine(50, '*');
+              printf("\n");
+              drawLine(1, '*');
+              addBlank(2);
+              printf("ERROR : BALL CANNOT BE MINUS");
+              addBlank(18);
+              drawLine(1, '*');
+              printf("\n");
+              drawLine(1, '*');
+              addBlank(2);
+              printf("한 라운드 전으로 게임을 되돌립니다.");
+              addBlank(11);
+              drawLine(1, '*');
+              printf("\n");
               num[2].first=num[2].middle=num[2].last=0;
               num[5].first=num[5].middle=num[5].last=0;
               num[8].first=num[8].middle=num[8].last=0;
@@ -430,8 +650,20 @@ void startGame(int* guess_answer) {
               checkGame(num, record, count++, round_strike, round_ball);
             }
             else {
-              printf("an ERROR OCCURED : BALL CANNOT BE MINUS\n");
-              printf("한 라운드 전으로 게임을 되돌립니다.\n");
+              drawLine(50, '*');
+              printf("\n");
+              drawLine(1, '*');
+              addBlank(2);
+              printf("ERROR : BALL CANNOT BE MINUS");
+              addBlank(18);
+              drawLine(1, '*');
+              printf("\n");
+              drawLine(1, '*');
+              addBlank(2);
+              printf("한 라운드 전으로 게임을 되돌립니다.");
+              addBlank(11);
+              drawLine(1, '*');
+              printf("\n");
               num[2].first=num[2].middle=num[2].last=0;
               num[5].first=num[5].middle=num[5].last=0;
               num[8].first=num[8].middle=num[8].last=0;
@@ -442,37 +674,99 @@ void startGame(int* guess_answer) {
           }
         }
         else {
-          printf("an ERROR OCCURED : STRIKE OR BALL CANNOT BE MINUS\n");
+          drawLine(50, '*');
+          printf("\n");
+          drawLine(1, '*');
+          addBlank(2);
+          printf("ERROR : STRIKE OR BALL CANNOT BE MINUS");
+          addBlank(8);
+          drawLine(1, '*');
+          printf("\n");
+          drawLine(1, '*');
+          addBlank(2);
+          printf("한 라운드 전으로 게임을 되돌립니다.");
+          addBlank(11);
+          drawLine(1, '*');
+          printf("\n");
           round_strike[count]=round_ball[count]=0;
           startGame(NULL);
           return;
         }
       }
       else {
-        printf("an ERROR OCCURED : STRIKE OR BALL CANNOT BE MORE THAN 3\n");
+        drawLine(50, '*');
+        printf("\n");
+        drawLine(1, '*');
+        addBlank(2);
+        printf("ERROR : STRIKE OR BALL CANNOT BE MORE THAN 3");
+        addBlank(2);
+        drawLine(1, '*');
+        printf("\n");
+        drawLine(1, '*');
+        addBlank(2);
+        printf("한 라운드 전으로 게임을 되돌립니다.");
+        addBlank(11);
+        drawLine(1, '*');
+        printf("\n");
         round_strike[count]=round_ball[count]=0;
         startGame(NULL);
         return;
       }
     }
     else {
-      printf("an ERROR OCCURED : STRIKE+BALL CANNOT BE MORE THAN 6, LESS THAN 0\n");
+      drawLine(50, '*');
+      printf("\n");
+      drawLine(1, '*');
+      addBlank(2);
+      printf("ERR : S+B CANNOT BE MORE THAN 6, LESS THAN 0");
+      addBlank(2);
+      drawLine(1, '*');
+      printf("\n");
+      drawLine(1, '*');
+      addBlank(2);
+      printf("한 라운드 전으로 게임을 되돌립니다.");
+      addBlank(11);
+      drawLine(1, '*');
+      printf("\n");
       round_strike[count]=round_ball[count]=0;
       startGame(NULL);
       return;
     }
   }
   else if(guess_answer==NULL&&count==3) {
-    printf(" PC : 369 \n");
+    addBlank(4);
+    printf("PC : 369");
+    addBlank(30);
+    drawLine(1, '*');
+    printf("\n");
+    drawLine(50, '*');
+    printf("\n");
     record[count].first=3;
     record[count].middle=6;
     record[count].last=9;
-    printf(" 스트라이크와 볼의수를 입력해주세요.\n");
-    printf("(예시) 1s 1b -> 1 1\n");
-    printf("OUT은 0s 0b로 간주합니다.\n");
+    drawLine(1, '*');
+    addBlank(2);
+    printf("스트라이크와 볼의 수를 입력해주세요.");
+    addBlank(10);
+    drawLine(1, '*');
+    printf("\n");
+    drawLine(1, '*');
+    addBlank(2);
+    printf("(예시) 1s 1b -> 1 1");
+    addBlank(27);
+    drawLine(1, '*');
+    printf("\n");
+    drawLine(1, '*');
+    addBlank(2);
+    printf("OUT은 0s 0b로 간주합니다.");
+    addBlank(21);
+    drawLine(1, '*');
+    printf("\n");
+    drawLine(50, '*');
+    printf("\n");
     scanf("%d %d", &round_strike[count], &round_ball[count]);
     result_sum=round_strike[count]+round_ball[count];
-    if(result_sum<=6 && result_sum>=0) {
+    if(result_sum<=3 && result_sum>=0) {
       if(3>=round_strike[count] && 3>=round_ball[count]) {
         if(round_strike[count]>=0 && round_ball[count]>=0) {
           if(round_strike[count]==3) resultGame(LOSE);
@@ -508,8 +802,20 @@ void startGame(int* guess_answer) {
               checkGame(num, record, count++, round_strike, round_ball);
             }
             else {
-              printf("an ERROR OCCURED : BALL CANNOT BE MINUS\n");
-              printf("한 라운드 전으로 게임을 되돌립니다.\n");
+              drawLine(50, '*');
+              printf("\n");
+              drawLine(1, '*');
+              addBlank(2);
+              printf("ERROR : BALL CANNOT BE MINUS");
+              addBlank(18);
+              drawLine(1, '*');
+              printf("\n");
+              drawLine(1, '*');
+              addBlank(2);
+              printf("한 라운드 전으로 게임을 되돌립니다.");
+              addBlank(11);
+              drawLine(1, '*');
+              printf("\n");
               num[3].first=num[3].middle=num[3].last=0;
               num[6].first=num[6].middle=num[6].last=0;
               num[9].first=num[9].middle=num[9].last=0;
@@ -564,8 +870,20 @@ void startGame(int* guess_answer) {
               checkGame(num, record, count++, round_strike, round_ball);
             }
             else {
-              printf("an ERROR OCCURED : BALL CANNOT BE MINUS\n");
-              printf("한 라운드 전으로 게임을 되돌립니다.\n");
+              drawLine(50, '*');
+              printf("\n");
+              drawLine(1, '*');
+              addBlank(2);
+              printf("ERROR : BALL CANNOT BE MINUS");
+              addBlank(18);
+              drawLine(1, '*');
+              printf("\n");
+              drawLine(1, '*');
+              addBlank(2);
+              printf("한 라운드 전으로 게임을 되돌립니다.");
+              addBlank(11);
+              drawLine(1, '*');
+              printf("\n");
               num[3].first=num[3].middle=num[3].last=0;
               num[6].first=num[6].middle=num[6].last=0;
               num[9].first=num[9].middle=num[9].last=0;
@@ -634,8 +952,20 @@ void startGame(int* guess_answer) {
               checkGame(num, record, count++, round_strike, round_ball);
             }
             else {
-              printf("an ERROR OCCURED : BALL CANNOT BE MINUS\n");
-              printf("한 라운드 전으로 게임을 되돌립니다.\n");
+              drawLine(50, '*');
+              printf("\n");
+              drawLine(1, '*');
+              addBlank(2);
+              printf("ERROR : BALL CANNOT BE MINUS");
+              addBlank(18);
+              drawLine(1, '*');
+              printf("\n");
+              drawLine(1, '*');
+              addBlank(2);
+              printf("한 라운드 전으로 게임을 되돌립니다.");
+              addBlank(11);
+              drawLine(1, '*');
+              printf("\n");
               num[3].first=num[3].middle=num[3].last=0;
               num[6].first=num[6].middle=num[6].last=0;
               num[9].first=num[9].middle=num[9].last=0;
@@ -646,21 +976,60 @@ void startGame(int* guess_answer) {
           }
         }
         else {
-          printf("an ERROR OCCURED : STRIKE OR BALL CANNOT BE MINUS\n");
+          drawLine(50, '*');
+          printf("\n");
+          drawLine(1, '*');
+          addBlank(2);
+          printf("ERROR : STRIKE OR BALL CANNOT BE MINUS");
+          addBlank(8);
+          drawLine(1, '*');
+          printf("\n");
+          drawLine(1, '*');
+          addBlank(2);
+          printf("한 라운드 전으로 게임을 되돌립니다.");
+          addBlank(11);
+          drawLine(1, '*');
+          printf("\n");
           round_strike[count]=round_ball[count]=0;
           startGame(NULL);
           return;
         }
       }
       else {
-        printf("an ERROR OCCURED : STRIKE OR BALL CANNOT BE MORE THAN 3\n");
+        drawLine(50, '*');
+        printf("\n");
+        drawLine(1, '*');
+        addBlank(2);
+        printf("ERROR : STRIKE OR BALL CANNOT BE MORE THAN 3");
+        addBlank(2);
+        drawLine(1, '*');
+        printf("\n");
+        drawLine(1, '*');
+        addBlank(2);
+        printf("한 라운드 전으로 게임을 되돌립니다.");
+        addBlank(11);
+        drawLine(1, '*');
+        printf("\n");
         round_strike[count]=round_ball[count]=0;
         startGame(NULL);
         return;
       }
     }
     else {
-      printf("an ERROR OCCURED : STRIKE+BALL CANNOT BE MORE THAN 6, LESS THAN 0\n");
+      drawLine(50, '*');
+      printf("\n");
+      drawLine(1, '*');
+      addBlank(2);
+      printf("ERR : S+B CANNOT BE MORE THAN 6, LESS THAN 0");
+      addBlank(2);
+      drawLine(1, '*');
+      printf("\n");
+      drawLine(1, '*');
+      addBlank(2);
+      printf("한 라운드 전으로 게임을 되돌립니다.");
+      addBlank(11);
+      drawLine(1, '*');
+      printf("\n");
       round_strike[count]=round_ball[count]=0;
       startGame(NULL);
       return;
@@ -677,16 +1046,39 @@ void startGame(int* guess_answer) {
     temp[2][0]=num[guess_answer[LAST]].first;
     temp[2][1]=num[guess_answer[LAST]].middle;
     temp[2][2]=num[guess_answer[LAST]].last;
-    printf(" PC : %d%d%d \n", guess_answer[FIRST], guess_answer[MIDDLE], guess_answer[LAST]);
+    addBlank(4);
+    printf("PC : %d%d%d", guess_answer[FIRST], guess_answer[MIDDLE], guess_answer[LAST]);
+    addBlank(30);
+    drawLine(1, '*');
+    printf("\n");
+    drawLine(50, '*');
+    printf("\n");
     record[count].first=guess_answer[FIRST];
     record[count].middle=guess_answer[MIDDLE];
     record[count].last=guess_answer[LAST];
-    printf(" 스트라이크와 볼의수를 입력해주세요.\n");
-    printf("(예시) 1s 1b -> 1 1\n");
-    printf("OUT은 0s 0b로 간주합니다.\n");
+    drawLine(1, '*');
+    addBlank(2);
+    printf("스트라이크와 볼의 수를 입력해주세요.");
+    addBlank(10);
+    drawLine(1, '*');
+    printf("\n");
+    drawLine(1, '*');
+    addBlank(2);
+    printf("(예시) 1s 1b -> 1 1");
+    addBlank(27);
+    drawLine(1, '*');
+    printf("\n");
+    drawLine(1, '*');
+    addBlank(2);
+    printf("OUT은 0s 0b로 간주합니다.");
+    addBlank(21);
+    drawLine(1, '*');
+    printf("\n");
+    drawLine(50, '*');
+    printf("\n");
     scanf("%d %d", &round_strike[count], &round_ball[count]);
     result_sum=round_strike[count]+round_ball[count];
-    if(result_sum<=6 && result_sum>=0) {
+    if(result_sum<=3 && result_sum>=0) {
       if(3>=round_strike[count] && 3>=round_ball[count]) {
         if(round_strike[count]>=0 && round_ball[count]>=0) {
           if(round_strike[count]==3) resultGame(LOSE);
@@ -722,8 +1114,20 @@ void startGame(int* guess_answer) {
               checkGame(num, record, count++, round_strike, round_ball);
             }
             else {
-              printf("an ERROR OCCURED : BALL CANNOT BE MINUS\n");
-              printf("한 라운드 전으로 게임을 되돌립니다.\n");
+              drawLine(50, '*');
+              printf("\n");
+              drawLine(1, '*');
+              addBlank(2);
+              printf("ERROR : BALL CANNOT BE MINUS");
+              addBlank(18);
+              drawLine(1, '*');
+              printf("\n");
+              drawLine(1, '*');
+              addBlank(2);
+              printf("한 라운드 전으로 게임을 되돌립니다.");
+              addBlank(11);
+              drawLine(1, '*');
+              printf("\n");
               num[guess_answer[FIRST]].first=temp[0][0];
               num[guess_answer[FIRST]].middle=temp[0][1];
               num[guess_answer[FIRST]].last=temp[0][2];
@@ -784,8 +1188,20 @@ void startGame(int* guess_answer) {
               checkGame(num, record, count++, round_strike, round_ball);
             }
             else {
-              printf("an ERROR OCCURED : BALL CANNOT BE MINUS\n");
-              printf("한 라운드 전으로 게임을 되돌립니다.\n");
+              drawLine(50, '*');
+              printf("\n");
+              drawLine(1, '*');
+              addBlank(2);
+              printf("ERROR : BALL CANNOT BE MINUS");
+              addBlank(18);
+              drawLine(1, '*');
+              printf("\n");
+              drawLine(1, '*');
+              addBlank(2);
+              printf("한 라운드 전으로 게임을 되돌립니다.");
+              addBlank(11);
+              drawLine(1, '*');
+              printf("\n");
               num[guess_answer[FIRST]].first=temp[0][0];
               num[guess_answer[FIRST]].middle=temp[0][1];
               num[guess_answer[FIRST]].last=temp[0][2];
@@ -860,8 +1276,20 @@ void startGame(int* guess_answer) {
               checkGame(num, record, count++, round_strike, round_ball);
             }
             else {
-              printf("an ERROR OCCURED : BALL CANNOT BE MINUS\n");
-              printf("한 라운드 전으로 게임을 되돌립니다.\n");
+              drawLine(50, '*');
+              printf("\n");
+              drawLine(1, '*');
+              addBlank(2);
+              printf("ERROR : BALL CANNOT BE MINUS");
+              addBlank(18);
+              drawLine(1, '*');
+              printf("\n");
+              drawLine(1, '*');
+              addBlank(2);
+              printf("한 라운드 전으로 게임을 되돌립니다.");
+              addBlank(11);
+              drawLine(1, '*');
+              printf("\n");
               num[guess_answer[FIRST]].first=temp[0][0];
               num[guess_answer[FIRST]].middle=temp[0][1];
               num[guess_answer[FIRST]].last=temp[0][2];
@@ -878,21 +1306,60 @@ void startGame(int* guess_answer) {
           }
         }
         else {
-          printf("an ERROR OCCURED : STRIKE OR BALL CANNOT BE MINUS\n");
+          drawLine(50, '*');
+          printf("\n");
+          drawLine(1, '*');
+          addBlank(2);
+          printf("ERROR : STRIKE OR BALL CANNOT BE MINUS");
+          addBlank(8);
+          drawLine(1, '*');
+          printf("\n");
+          drawLine(1, '*');
+          addBlank(2);
+          printf("한 라운드 전으로 게임을 되돌립니다.");
+          addBlank(11);
+          drawLine(1, '*');
+          printf("\n");
           round_strike[count]=round_ball[count]=0;
           startGame(NULL);
           return;
         }
       }
       else {
-        printf("an ERROR OCCURED : STRIKE OR BALL CANNOT BE MORE THAN 3\n");
+        drawLine(50, '*');
+        printf("\n");
+        drawLine(1, '*');
+        addBlank(2);
+        printf("ERROR : STRIKE OR BALL CANNOT BE MORE THAN 3");
+        addBlank(2);
+        drawLine(1, '*');
+        printf("\n");
+        drawLine(1, '*');
+        addBlank(2);
+        printf("한 라운드 전으로 게임을 되돌립니다.");
+        addBlank(11);
+        drawLine(1, '*');
+        printf("\n");
         round_strike[count]=round_ball[count]=0;
         startGame(NULL);
         return;
       }
     }
     else {
-      printf("an ERROR OCCURED : STRIKE+BALL CANNOT BE MORE THAN 6, LESS THAN 0\n");
+      drawLine(50, '*');
+      printf("\n");
+      drawLine(1, '*');
+      addBlank(2);
+      printf("ERR : S+B CANNOT BE MORE THAN 6, LESS THAN 0");
+      addBlank(2);
+      drawLine(1, '*');
+      printf("\n");
+      drawLine(1, '*');
+      addBlank(2);
+      printf("한 라운드 전으로 게임을 되돌립니다.");
+      addBlank(11);
+      drawLine(1, '*');
+      printf("\n");
       round_strike[count]=round_ball[count]=0;
       startGame(NULL);
       return;
@@ -904,9 +1371,9 @@ void startGame(int* guess_answer) {
 void checkGame(struct num *num, struct record *record, int count, int *round_strike, int *round_ball) {
   int sum=0;
   // OUT NUMBER CHECK
-  for(int p=0; p<=9; p++) {
-    printf("(%d) %d%d%d\n",p, num[p].first, num[p].middle, num[p].last);
-  }
+  // for(int p=0; p<=9; p++) {
+  //   printf("(%d) %d%d%d\n",p, num[p].first, num[p].middle, num[p].last);
+  // }
   for(int i=1; i<=count; i++) {
     sum+=round_strike[i]+round_ball[i];
   }
@@ -932,7 +1399,11 @@ void checkGame(struct num *num, struct record *record, int count, int *round_str
     }
   }
   else {
-    if(sum<=3) num[0].first=num[0].middle=num[0].last=YES;
+    int check_sum=0;
+    for(int i=1; i<=3; i++) {
+      check_sum+=round_strike[i]+round_ball[i];
+    }
+    if(check_sum<3 && sum<=3) num[0].first=num[0].middle=num[0].last=YES;
   }
 
   // GUESS ANSWER
@@ -940,130 +1411,281 @@ void checkGame(struct num *num, struct record *record, int count, int *round_str
   FIRST = 0, MIDDLE = 1, LAST = 2
   */
   int guess_answer[3]={10,10,10}; // To check
-  for(int k=0; k<=9; k++) {
-    // first
-    if(k==0) continue;
-    if(guess_answer[FIRST]!=10) {
-      if(num[k].first!=NO && num[guess_answer[FIRST]].first>num[k].first )  guess_answer[FIRST]=k;
-    }
-    else {
-      if(num[k].first!=NO) guess_answer[FIRST]=k;
-    }
-  }
-
-  for(int k=0; k<=9; k++) {
-    // middle
-    if(guess_answer[FIRST]==k)  continue;
-    if(guess_answer[MIDDLE]!=10) {
-      if(num[k].middle!=NO && num[guess_answer[MIDDLE]].middle>num[k].middle ) {
-        guess_answer[MIDDLE]=k;
+  int temp_first, temp_middle;
+  temp_first=temp_middle=10;
+  int check_overNine=0;
+  int check_twice=0;
+  while(check_overNine!=1) {
+    for(int k=0; k<=9; k++) {
+      // first
+      if(k==0) continue;
+      if(num[k].first==NO) continue;
+      if(temp_first!=10) {
+        if(k==temp_first) continue;
+        if(num[k].first!=NO && num[guess_answer[FIRST]].first>=num[k].first )  guess_answer[FIRST]=k;
+        continue;
+      }
+      if(guess_answer[FIRST]!=10) {
+        if(num[k].first!=NO && num[guess_answer[FIRST]].first>num[k].first )  guess_answer[FIRST]=k;
+      }
+      else {
+        if(num[k].first!=NO) guess_answer[FIRST]=k;
       }
     }
-    else {
-      if(num[k].middle!=NO) {
-        guess_answer[MIDDLE]=k;
+
+    for(int k=0; k<=9; k++) {
+      // middle
+      if(guess_answer[FIRST]==k)  continue;
+      if(num[k].middle==NO) continue;
+      if(temp_middle!=10) {
+        if(k==temp_middle) continue;
+        if(num[k].middle!=NO && num[guess_answer[MIDDLE]].middle>=num[k].middle ) {
+          guess_answer[MIDDLE]=k;
+        }
+        continue;
       }
-    }
-  }
-
-  for(int k=0; k<=9; k++) {
-    // last
-    if(guess_answer[FIRST]==k || guess_answer[MIDDLE]==k) continue;
-    if(guess_answer[LAST]!=10) {
-      if(num[k].last!=NO && num[guess_answer[LAST]].last>num[k].last )  guess_answer[LAST]=k;
-    }
-    else {
-      if(num[k].last!=NO) guess_answer[LAST]=k;
-    }
-  }
-  int enter_code=0; // enter_code 1: middle, 2: last
-
-  for(int q=1; q<=count; q++) {
-    if(record[q].first==guess_answer[FIRST]) {
-      if(record[q].middle==guess_answer[MIDDLE]) {
-        if(record[q].last==guess_answer[LAST]) {
-          for(int k=1; k<=9; k++) {
-            // first
-            printf("(%d)[%d]%d %d\n",q, k, record[q].first, guess_answer[FIRST]);
-            if(k==record[q].first) continue;
-            if(guess_answer[FIRST]!=record[q].first ) {
-              if(num[k].first!=NO && num[guess_answer[FIRST]].first>num[k].first ) {
-                guess_answer[FIRST]=k;
-                printf("dd\n");
-              }
-            }
-            else if(k==9 && num[9].first==NO) {
-              enter_code=1;
-            }
-            else {
-              if(num[k].first!=NO && record[q].first<k) {
-                int temp=guess_answer[FIRST];
-                guess_answer[FIRST]=k;
-                for(int s=1; s<=q;s++) {
-                  if(record[s].first==guess_answer[FIRST]) {
-                    if(record[s].middle==guess_answer[MIDDLE]) {
-                      if(record[s].last==guess_answer[LAST]) {
-                        guess_answer[FIRST]=temp;
-                        break;
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          if(enter_code==1) {
-            for(int k=0; k<=9; k++) {
-              // middle
-              if(guess_answer[FIRST]==k) continue;
-              if(k==record[q].middle) continue;
-              if(guess_answer[MIDDLE]!=record[q].middle) {
-                if(num[k].middle!=NO && num[guess_answer[MIDDLE]].middle>num[k].middle ) {
-                  guess_answer[MIDDLE]=k;
-                }
-              }
-              else if(k==9) {
-                enter_code=2;
-              }
-              else {
-                if(num[k].middle!=NO) {
-                  guess_answer[MIDDLE]=k;
-                }
-              }
-            }
-          }
-          if(enter_code==2) {
-            for(int k=0; k<=9; k++) {
-              // last
-              if(guess_answer[FIRST]==k || guess_answer[MIDDLE]==k) continue;
-              if(k==record[q].last) continue;
-              if(guess_answer[LAST]!=record[q].last) {
-                if(num[k].last!=NO && num[guess_answer[LAST]].last>num[k].last )  guess_answer[LAST]=k;
-              }
-              else {
-                if(num[k].last!=NO) guess_answer[LAST]=k;
-              }
-            }
-          }
-          }
+      if(guess_answer[MIDDLE]!=10) {
+        if(num[k].middle!=NO && num[guess_answer[MIDDLE]].middle>num[k].middle ) {
+          guess_answer[MIDDLE]=k;
+        }
+      }
+      else {
+        if(num[k].middle!=NO) {
+          guess_answer[MIDDLE]=k;
         }
       }
     }
+
+    for(int k=0; k<=9; k++) {
+      // last
+      if(guess_answer[FIRST]==k || guess_answer[MIDDLE]==k) continue;
+      if(num[k].last==NO) continue;
+      if(guess_answer[LAST]!=10) {
+        if(num[k].last!=NO && num[guess_answer[LAST]].last>num[k].last )  guess_answer[LAST]=k;
+      }
+      else {
+        if(num[k].last!=NO) guess_answer[LAST]=k;
+      }
+    }
+    if(guess_answer[MIDDLE]==10) {
+      temp_first=guess_answer[FIRST];
+    }
+    else if(guess_answer[LAST]==10) {
+      if(check_twice==0) {
+        temp_first=guess_answer[FIRST];
+        check_twice=1;
+      }
+      else {
+        temp_middle=guess_answer[MIDDLE];
+        temp_first=10;
+      }
+    }
+    else {
+      temp_first=temp_middle=10;
+      check_overNine=1;
+    }
   }
+  int loop=count;
+  int same_cnt=0;
+  int progress_code=1; // 첫번째수 부터 하니까
+  int pass_code=0;
+  int first_entered=0; // 첫번쨰 대입후 1로 변환
+  int* recent_changed;
+  recent_changed=(int*)malloc(sizeof(int)*count);
+  for(int p=count; p>=0; p--) {
+    recent_changed[p]=10;
+  }
+  // printf("%d%d%d\n", guess_answer[FIRST], guess_answer[MIDDLE], guess_answer[LAST]);
+  // printf("%d%d%d\n", record[loop].first, record[loop].middle, record[loop].last);
+while(loop!=0) {
+  // printf("loop : %d\n", loop);
+  unsigned int guess_num = guess_answer[FIRST]*100+guess_answer[MIDDLE]*10+guess_answer[LAST];
+  // printf("guessing : %d\n", guess_num);
+  unsigned int record_num = record[loop].first*100+record[loop].middle*10+record[loop].last;
+  // printf("recorded : %d\n", record_num);
+    if(guess_num==record_num) {
+      if(progress_code==1) {
+        for(int i=9; i!=0; i--) {
+          // if(guess_answer[MIDDLE]==10 || guess_answer[LAST]==10) {
+          //   if(i==guess_answer[FIRST]) continue;
+          // }
+          if(i==record[loop].first) continue;
+          if(i==record[loop].middle) continue;
+          if(i==record[loop].last) continue;
+          if(num[i].first==NO) continue;
+          if(first_entered==0) {
+            guess_answer[FIRST]=i;
+            recent_changed[same_cnt]=i;
+            first_entered=1;
+          }
+          if(pass_code==0) {
+            if(num[guess_answer[FIRST]].first>num[i].first) {
+              guess_answer[FIRST]=i;
+              recent_changed[same_cnt]=i;
+            }
+          }
+          else {
+            if(num[guess_answer[FIRST]].first>=num[i].first) {
+              guess_answer[FIRST]=i;
+              recent_changed[same_cnt]=i;
+            }
+          }
+        }
+        // printf("same_cnt : %d\n", same_cnt);
+        for(int j=same_cnt; j!=0; j--) {
+          if(guess_answer[FIRST]==recent_changed[same_cnt] || recent_changed[same_cnt]==10 ) {
+            // printf("%d %d %d\n", guess_answer[FIRST], recent_changed[same_cnt], same_cnt);
+            progress_code=2; // 2번쨰수로
+            same_cnt=0;
+            first_entered=0;
+            free(recent_changed);
+            recent_changed=(int*)malloc(sizeof(int)*count);
+            for(int p=count; p>=0; p--) {
+              recent_changed[p]=10;
+            }
+            break;
+          }
+        }
+        if(progress_code==1)
+          same_cnt++;
+        loop=count;
+        continue;
+      }
+      if(progress_code==2) {
+        // printf("go2\n");
+        for(int i=0; i<10; i++) {
+          // if(guess_answer[LAST]==10) {
+          //   if(i==guess_answer[MIDDLE]) continue;
+          // }
+          if(i==record[loop].first) continue;
+          if(i==record[loop].middle) continue;
+          if(i==record[loop].last) continue;
+          if(num[i].middle==NO) continue;
+          if(first_entered==0) {
+            guess_answer[MIDDLE]=i;
+            recent_changed[same_cnt]=i;
+            first_entered=1;
+          }
+          if(pass_code==0) {
+            if(num[guess_answer[MIDDLE]].middle>num[i].middle) {
+              guess_answer[MIDDLE]=i;
+              recent_changed[same_cnt]=i;
+            }
+          }
+          else {
+            if(num[guess_answer[MIDDLE]].middle>=num[i].middle) {
+              guess_answer[MIDDLE]=i;
+              recent_changed[same_cnt]=i;
+            }
+          }
+        }
+        for(int j=same_cnt; j!=0; j--) {
+          if(guess_answer[MIDDLE]==recent_changed[same_cnt] || recent_changed[same_cnt]==10) {
+            progress_code=3; // 3번쨰수로
+            same_cnt=0;
+            first_entered=0;
+            free(recent_changed);
+            recent_changed=(int*)malloc(sizeof(int)*count);
+            for(int p=count; p>=0; p--) {
+              recent_changed[p]=10;
+            }
+            break;
+          }
+        }
+        if(progress_code==2)
+          same_cnt++;
+        loop=count;
+        continue;
+      }
+      if(progress_code==3) {
+        // printf("go3\n");
+        for(int i=0; i<10; i++) {
+          if(i==record[loop].first) continue;
+          if(i==record[loop].middle) continue;
+          if(i==record[loop].last) continue;
+          if(num[i].last==NO) continue;
+          if(first_entered==0) {
+            guess_answer[LAST]=i;
+            recent_changed[same_cnt]=i;
+            first_entered=1;
+          }
+          if(pass_code==0) {
+            if(num[guess_answer[LAST]].last>num[i].last) {
+              guess_answer[LAST]=i;
+              recent_changed[same_cnt]=i;
+            }
+          }
+          else {
+            if(num[guess_answer[LAST]].last>=num[i].last) {
+              guess_answer[LAST]=i;
+              recent_changed[same_cnt]=i;
+            }
+          }
+        }
+        for(int j=same_cnt; j!=0; j--) {
+          if(guess_answer[LAST]==recent_changed[same_cnt] || recent_changed[same_cnt]==10) {
+            progress_code=1; // test
+            pass_code=1;
+            same_cnt=0;
+            first_entered=0;
+            free(recent_changed);
+            recent_changed=(int*)malloc(sizeof(int)*count);
+            for(int p=count; p>=0; p--) {
+              recent_changed[p]=10;
+            }
+            break;
+          }
+        }
+        if(progress_code==3)
+          same_cnt++;
+        loop=count;
+        continue;
+      }
+      if(progress_code==0) {
+        printf("ERROR OCCURED\n");
+      }
+    }
+    loop--;
+}
+  free(recent_changed);
   startGame(guess_answer);
   return;
 }
 
 void resultGame(int result_code) {
+  drawLine(50, '*');
+  printf("\n");
   if(result_code==WIN) {
-    printf("YOU ARE VICTORY\n");
+    drawLine(1, '*');
+    addBlank(2);
+    printf("YOU ARE VICTORY");
+    addBlank(31);
+    drawLine(1, '*');
+    printf("\n");
+    drawLine(50, '*');
+    printf("\n");
     return;
   }
   else if(result_code==LOSE) {
-    printf("YOU ARE LOSE\n");
+    drawLine(1, '*');
+    addBlank(2);
+    printf("YOU ARE LOSE");
+    addBlank(34);
+    drawLine(1, '*');
+    printf("\n");
+    drawLine(50, '*');
+    printf("\n");
     return;
   }
   else {
+    drawLine(1, '*');
+    addBlank(2);
     printf("an ERROR OCCURED #%d\n", result_code);
+    addBlank(27);
+    drawLine(1, '*');
+    printf("\n");
+    drawLine(50, '*');
+    printf("\n");
     return;
   }
   return;
@@ -1073,4 +1695,16 @@ void evaluate(int *num, int result) {
   if(*num!=NO) {
     *num=result;
   }
+}
+void drawLine(int count, char word) {
+  while(count--) {
+    printf("%c", word);
+  }
+  return;
+}
+void addBlank(int count) {
+  while(count--) {
+    printf(" ");
+  }
+  return;
 }
