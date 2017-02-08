@@ -1,9 +1,10 @@
-﻿#include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
 #include "game.h"
 #include "deco.h"
 // WIN = 0, LOSE = 1
+// FIRST = 0 , MIDDLE = 1, LAST = 2
 // YES = 1, VERYHIGH = 2, HIGH = 3, NORMAL = 4, LOW = 5, SOLOW = 6 ,VERYLOW = 7, NO = 8
 struct num {
   int first;
@@ -1492,7 +1493,7 @@ void checkGame(struct num *num, struct record *record, int count, int *round_str
   int first_entered=0; // 첫번쨰 대입후 1로 변환
   int* recent_changed;
   recent_changed=(int*)malloc(sizeof(int)*count);
-  for(int p=count; p>=0; p--) {
+  for(int p=(count-1); p>=0; p--) {
     recent_changed[p]=10;
   }
   // printf("%d%d%d\n", guess_answer[FIRST], guess_answer[MIDDLE], guess_answer[LAST]);
@@ -1540,7 +1541,7 @@ while(loop!=0) {
             first_entered=0;
             free(recent_changed);
             recent_changed=(int*)malloc(sizeof(int)*count);
-            for(int p=count; p>=0; p--) {
+            for(int p = (count - 1); p>=0; p--) {
               recent_changed[p]=10;
             }
             break;
@@ -1586,7 +1587,7 @@ while(loop!=0) {
             first_entered=0;
             free(recent_changed);
             recent_changed=(int*)malloc(sizeof(int)*count);
-            for(int p=count; p>=0; p--) {
+            for(int p = (count - 1); p>=0; p--) {
               recent_changed[p]=10;
             }
             break;
@@ -1630,7 +1631,7 @@ while(loop!=0) {
             first_entered=0;
             free(recent_changed);
             recent_changed=(int*)malloc(sizeof(int)*count);
-            for(int p=count; p>=0; p--) {
+            for(int p = (count - 1); p>=0; p--) {
               recent_changed[p]=10;
             }
             break;
