@@ -1371,10 +1371,6 @@ void startGame(int* guess_answer) {
 
 void checkGame(struct num *num, struct record *record, int count, int *round_strike, int *round_ball) {
   int sum=0;
-  // OUT NUMBER CHECK
-  // for(int p=0; p<=9; p++) {
-  //   printf("(%d) %d%d%d\n",p, num[p].first, num[p].middle, num[p].last);
-  // }
   for(int i=1; i<=count; i++) {
     sum+=round_strike[i]+round_ball[i];
   }
@@ -1496,20 +1492,13 @@ void checkGame(struct num *num, struct record *record, int count, int *round_str
   for(int p=(count-1); p>=0; p--) {
     recent_changed[p]=10;
   }
-  // printf("%d%d%d\n", guess_answer[FIRST], guess_answer[MIDDLE], guess_answer[LAST]);
-  // printf("%d%d%d\n", record[loop].first, record[loop].middle, record[loop].last);
+
 while(loop!=0) {
-  // printf("loop : %d\n", loop);
   unsigned int guess_num = guess_answer[FIRST]*100+guess_answer[MIDDLE]*10+guess_answer[LAST];
-  // printf("guessing : %d\n", guess_num);
   unsigned int record_num = record[loop].first*100+record[loop].middle*10+record[loop].last;
-  // printf("recorded : %d\n", record_num);
     if(guess_num==record_num) {
       if(progress_code==1) {
         for(int i=9; i!=0; i--) {
-          // if(guess_answer[MIDDLE]==10 || guess_answer[LAST]==10) {
-          //   if(i==guess_answer[FIRST]) continue;
-          // }
           if(i==record[loop].first) continue;
           if(i==record[loop].middle) continue;
           if(i==record[loop].last) continue;
@@ -1532,10 +1521,8 @@ while(loop!=0) {
             }
           }
         }
-        // printf("same_cnt : %d\n", same_cnt);
         for(int j=same_cnt; j!=0; j--) {
           if(guess_answer[FIRST]==recent_changed[same_cnt] || recent_changed[same_cnt]==10 ) {
-            // printf("%d %d %d\n", guess_answer[FIRST], recent_changed[same_cnt], same_cnt);
             progress_code=2; // 2번쨰수로
             same_cnt=0;
             first_entered=0;
@@ -1553,11 +1540,7 @@ while(loop!=0) {
         continue;
       }
       if(progress_code==2) {
-        // printf("go2\n");
         for(int i=0; i<10; i++) {
-          // if(guess_answer[LAST]==10) {
-          //   if(i==guess_answer[MIDDLE]) continue;
-          // }
           if(i==record[loop].first) continue;
           if(i==record[loop].middle) continue;
           if(i==record[loop].last) continue;
@@ -1599,7 +1582,6 @@ while(loop!=0) {
         continue;
       }
       if(progress_code==3) {
-        // printf("go3\n");
         for(int i=0; i<10; i++) {
           if(i==record[loop].first) continue;
           if(i==record[loop].middle) continue;
@@ -1625,7 +1607,7 @@ while(loop!=0) {
         }
         for(int j=same_cnt; j!=0; j--) {
           if(guess_answer[LAST]==recent_changed[same_cnt] || recent_changed[same_cnt]==10) {
-            progress_code=1; // test
+            progress_code=1; 
             pass_code=1;
             same_cnt=0;
             first_entered=0;
