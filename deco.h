@@ -1,2 +1,2 @@
-void drawLine(int, char);
-void addBlank(int);
+__inline void drawLine(int, char);
+__inline void addBlank(int);
