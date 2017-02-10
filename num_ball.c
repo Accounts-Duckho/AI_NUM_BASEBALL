@@ -6,6 +6,7 @@
 // WIN = 0, LOSE = 1
 // FIRST = 0 , MIDDLE = 1, LAST = 2
 // YES = 1, VERYHIGH = 2, HIGH = 3, NORMAL = 4, LOW = 5, SOLOW = 6 ,VERYLOW = 7, NO = 8
+// Load mode -> 1: NEW 2: REPLAY
 struct num {
   int first;
   int middle;
@@ -84,17 +85,26 @@ int main(void) {
   printf("\n");
   drawLine(50, '*');
   printf("\n");
-  loadGame();
+  loadGame(NEW);
   return 0;
 }
-void loadGame(void) {
-  int choice_start;
+void loadGame(int mode) {
+  int choice_start=0;
   addBlank(2);
-  printf("게임 시작은 1번, 종료는 2번을 입력\n");
+  if (mode == NEW) {
+	printf("게임 시작은 1번, 종료는 2번을 입력\n");
+  }
+  else if (mode == REPLAY) {
+	printf("다시하기는 1번 , 종료는 2번을 입력\n");
+  }
+  else {
+	  printf("error code #%d\n", mode);
+  }
   scanf("%d", &choice_start);
   if(choice_start==1) {
     system("cls");
     startGame(NULL);
+	return;
   }
   else if(choice_start==2) {
     return;
@@ -102,7 +112,12 @@ void loadGame(void) {
   else {
     drawLine(50, '*');
     printf("\n");
-    loadGame();
+	if (mode == NEW) {
+		loadGame(NEW);
+	}
+	else {
+		loadGame(REPLAY);
+	}
     return;
   }
   return;
@@ -110,9 +125,9 @@ void loadGame(void) {
 void startGame(int* guess_answer) {
   system("cls");
   static struct num num[10];
-  static int round_strike[15]={0};
-  static int round_ball[15]={0};
-  static struct record record[50];
+  static int round_strike[11]={0};
+  static int round_ball[11]={0};
+  static struct record record[11];
   static int count=1;
   int result_sum;
   drawLine(50, '*');
@@ -156,7 +171,11 @@ void startGame(int* guess_answer) {
     if(result_sum<=3 && result_sum>=0) {
       if(3>=round_strike[count] && 3>=round_ball[count]) {
         if(round_strike[count]>=0 && round_ball[count]>=0) {
-          if(round_strike[count]==3) resultGame(LOSE);
+			if (round_strike[count] == 3) {
+				initialize(num, record, &count, round_strike, round_ball);
+				resultGame(LOSE);
+				return;
+			}
           else if(round_strike[count]==2) {
             if(round_ball[count]==1) {
               // WE get 3 number all : THIS COULD BE MORE PERFECT..
@@ -468,7 +487,11 @@ void startGame(int* guess_answer) {
     if(result_sum<=3 && result_sum>=0) {
       if(3>=round_strike[count] && 3>=round_ball[count]) {
         if(round_strike[count]>=0 && round_ball[count]>=0) {
-          if(round_strike[count]==3) resultGame(LOSE);
+          if(round_strike[count]==3) {
+			  initialize(num, record, &count, round_strike, round_ball);
+			  resultGame(LOSE);
+			  return;
+		  }
           else if(round_strike[count]==2) {
             if(round_ball[count]==1) {
               // WE get 3 number all : THIS COULD BE MORE PERFECT..
@@ -770,7 +793,11 @@ void startGame(int* guess_answer) {
     if(result_sum<=3 && result_sum>=0) {
       if(3>=round_strike[count] && 3>=round_ball[count]) {
         if(round_strike[count]>=0 && round_ball[count]>=0) {
-          if(round_strike[count]==3) resultGame(LOSE);
+          if(round_strike[count]==3) {
+			  initialize(num, record, &count, round_strike, round_ball);
+			  resultGame(LOSE);
+			  return;
+		  }
           else if(round_strike[count]==2) {
             if(round_ball[count]==1) {
               // WE get 3 number all : THIS COULD BE MORE PERFECT..
@@ -1049,7 +1076,10 @@ void startGame(int* guess_answer) {
     temp[2][2]=num[guess_answer[LAST]].last;
     addBlank(4);
     printf("PC : %d%d%d", guess_answer[FIRST], guess_answer[MIDDLE], guess_answer[LAST]);
-    addBlank(30);
+	if (count != 10)
+		addBlank(30);
+	else
+		addBlank(29);
     drawLine(1, '*');
     printf("\n");
     drawLine(50, '*');
@@ -1078,11 +1108,20 @@ void startGame(int* guess_answer) {
     drawLine(50, '*');
     printf("\n");
     scanf("%d %d", &round_strike[count], &round_ball[count]);
+	if (count == 10 && round_strike[count] != 3) {
+		initialize(num, record, &count, round_strike, round_ball);
+		resultGame(WIN);
+		return;
+	}
     result_sum=round_strike[count]+round_ball[count];
     if(result_sum<=3 && result_sum>=0) {
       if(3>=round_strike[count] && 3>=round_ball[count]) {
         if(round_strike[count]>=0 && round_ball[count]>=0) {
-          if(round_strike[count]==3) resultGame(LOSE);
+          if(round_strike[count]==3) {
+			  initialize(num, record, &count, round_strike, round_ball);
+			  resultGame(LOSE);
+			  return;
+		  }
           else if(round_strike[count]==2) {
             if(round_ball[count]==1) {
               // WE get 3 number all : THIS COULD BE MORE PERFECT..
@@ -1370,6 +1409,43 @@ void startGame(int* guess_answer) {
 }
 
 void checkGame(struct num *num, struct record *record, int count, int *round_strike, int *round_ball) {
+	//if (round_strike[count] + round_ball[count] == 3) {
+	//	static int turn = 1;
+	//	int ele_num[3];
+	//	if (turn == 1) {
+	//		ele_num[FIRST] = record[count].first;
+	//		ele_num[MIDDLE] = record[count].middle;
+	//		ele_num[LAST] = record[count].last;
+	//	}
+	//	static int predict_num[3] = { 10, 10, 10 };
+	//	for (int i = 2; i >= 0; i--) {
+	//		//first
+	//		if (ele_num[i] == 0) continue;
+ //			if (predict_num[FIRST] == 10) predict_num[FIRST] = ele_num[2];
+	//		if (num[predict_num[FIRST]].first > num[ele_num[i]].first && num[ele_num[i]].first != 0) {
+	//			predict_num[FIRST] = ele_num[i];
+	//		}
+	//	}
+	//	for (int i = 2; i >= 0; i--) {
+	//		//middle
+	//		if (ele_num[i] == predict_num[FIRST]) continue;
+	//		if (predict_num[MIDDLE] == 10) predict_num[MIDDLE] = ele_num[1];
+	//		if (num[predict_num[MIDDLE]].middle > num[ele_num[i]].middle && num[ele_num[i]].middle != 0) {
+	//			predict_num[MIDDLE] = ele_num[i];
+	//		}
+	//	}
+	//	for (int i = 2; i >= 0; i--) {
+	//		//middle
+	//		if (ele_num[i] == predict_num[FIRST]) continue;
+	//		if (ele_num[i] == predict_num[MIDDLE]) continue;
+	//		if (predict_num[LAST] == 10) predict_num[LAST] = ele_num[0];
+	//		if (num[predict_num[LAST]].last > num[ele_num[i]].last && num[ele_num[i]].last != 0) {
+	//			predict_num[LAST] = ele_num[i];
+	//		}
+	//	}
+	//	startGame(predict_num);
+	//	turn++;
+	//}
   int sum=0;
   for(int i=1; i<=count; i++) {
     sum+=round_strike[i]+round_ball[i];
@@ -1647,7 +1723,6 @@ void resultGame(int result_code) {
     printf("\n");
     drawLine(50, '*');
     printf("\n");
-    return;
   }
   else if(result_code==LOSE) {
     drawLine(1, '*');
@@ -1658,7 +1733,6 @@ void resultGame(int result_code) {
     printf("\n");
     drawLine(50, '*');
     printf("\n");
-    return;
   }
   else {
     drawLine(1, '*');
@@ -1669,25 +1743,44 @@ void resultGame(int result_code) {
     printf("\n");
     drawLine(50, '*');
     printf("\n");
-    return;
   }
+  loadGame(REPLAY);
   return;
 }
 
-void evaluate(int *num, int result) {
+__inline void evaluate(int *num, int result) {
   if(*num!=NO) {
     *num=result;
   }
 }
-void drawLine(int count, char word) {
+__inline void drawLine(int count, char word) {
   while(count--) {
     printf("%c", word);
   }
   return;
 }
-void addBlank(int count) {
+__inline void addBlank(int count) {
   while(count--) {
     printf(" ");
   }
   return;
+}
+void initialize(struct num *num, struct record *record, int *count, int* round_strike, int* round_ball) {
+	for (int i = 9; i >= 0; i--) {
+		num[i].first = 0;
+		num[i].middle = 0;
+		num[i].last = 0;
+		round_strike[i] = 0;
+		round_ball[i] = 0;
+		record[i].first = 0;
+		record[i].middle = 0;
+		record[i].last = 0;
+	}
+	round_strike[10] = 0;
+	round_ball[10] = 0;
+	record[10].first = 0;
+	record[10].middle = 0;
+	record[10].last = 0;
+	 *count = 1;
+	 return;
 }
