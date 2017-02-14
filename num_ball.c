@@ -23,7 +23,7 @@ int test_num_count;
 int test_win_count;
 int isTestMode;
 int main(void) {
-  //system("mode con:cols=50 lines=15");
+  system("mode con:cols=50 lines=15");
   drawLine(50, '*');
   printf("\n");
   drawLine(1, '*');
@@ -108,7 +108,7 @@ void loadGame(int mode) {
   }
   scanf("%d", &choice_start);
   if(choice_start==1) {
-    //system("cls");
+    system("cls");
 	isTestMode = NOT;
     startGame(NULL);
 	return;
@@ -133,7 +133,7 @@ void loadGame(int mode) {
   return;
 }
 void startGame(int* guess_answer) {
-  //system("cls");
+  system("cls");
   static struct num num[10];
   static int round_strike[11]={0};
   static int round_ball[11]={0};
@@ -1442,47 +1442,15 @@ void startGame(int* guess_answer) {
 }
 
 void checkGame(struct num *num, struct record *record, int count, int *round_strike, int *round_ball) {
-	//if (round_strike[count] + round_ball[count] == 3) {
-	//	static int turn = 1;
-	//	int ele_num[3];
-	//	if (turn == 1) {
-	//		ele_num[FIRST] = record[count].first;
-	//		ele_num[MIDDLE] = record[count].middle;
-	//		ele_num[LAST] = record[count].last;
-	//	}
-	//	static int predict_num[3] = { 10, 10, 10 };
-	//	for (int i = 2; i >= 0; i--) {
-	//		//first
-	//		if (ele_num[i] == 0) continue;
- //			if (predict_num[FIRST] == 10) predict_num[FIRST] = ele_num[2];
-	//		if (num[predict_num[FIRST]].first > num[ele_num[i]].first && num[ele_num[i]].first != 0) {
-	//			predict_num[FIRST] = ele_num[i];
-	//		}
-	//	}
-	//	for (int i = 2; i >= 0; i--) {
-	//		//middle
-	//		if (ele_num[i] == predict_num[FIRST]) continue;
-	//		if (predict_num[MIDDLE] == 10) predict_num[MIDDLE] = ele_num[1];
-	//		if (num[predict_num[MIDDLE]].middle > num[ele_num[i]].middle && num[ele_num[i]].middle != 0) {
-	//			predict_num[MIDDLE] = ele_num[i];
-	//		}
-	//	}
-	//	for (int i = 2; i >= 0; i--) {
-	//		//middle
-	//		if (ele_num[i] == predict_num[FIRST]) continue;
-	//		if (ele_num[i] == predict_num[MIDDLE]) continue;
-	//		if (predict_num[LAST] == 10) predict_num[LAST] = ele_num[0];
-	//		if (num[predict_num[LAST]].last > num[ele_num[i]].last && num[ele_num[i]].last != 0) {
-	//			predict_num[LAST] = ele_num[i];
-	//		}
-	//	}
-	//	startGame(predict_num, NOT);
-	//	turn++;
-	//}
+	int isThreeMode = NOT;
+	static int ele_num[3];
+	if (round_strike[count] + round_ball[count] == 3) {
+		ele_num[0] = record[count].first;
+		ele_num[1] = record[count].middle;
+		ele_num[2] = record[count].last;
+		isThreeMode = OK;
+	}
   int sum=0;
-	     for(int p=0; p<=9; p++) {
-	      printf("(%d) %d%d%d\n",p, num[p].first, num[p].middle, num[p].last);
-	     }
   for(int i=1; i<=count; i++) {
     sum+=round_strike[i]+round_ball[i];
   }
@@ -1524,9 +1492,21 @@ void checkGame(struct num *num, struct record *record, int count, int *round_str
   temp_first=temp_middle=10;
   int check_overNine=0;
   int check_twice=0;
+
+  int testCount = 0;
+
   while(check_overNine!=1) {
+	  testCount++;
+	  if (testCount >= 15) system("pause");
     for(int k=0; k<=9; k++) {
       // first
+		if (isThreeMode == OK) {
+			if (k != ele_num[0]) {
+				if (k != ele_num[1] && k != ele_num[2]) {
+						continue;
+				}
+			}
+	  }
       if(k==0) continue;
       if(num[k].first==NO) continue;
       if(temp_first!=10) {
@@ -1541,10 +1521,21 @@ void checkGame(struct num *num, struct record *record, int count, int *round_str
         guess_answer[FIRST]=k;
       }
     }
-
+	if (guess_answer[MIDDLE] == guess_answer[FIRST]) {
+		guess_answer[MIDDLE] = 10;
+	}
     for(int k=0; k<=9; k++) {
       // middle
-      if(guess_answer[FIRST]==k)  continue;
+		if (isThreeMode == OK) {
+			if (k != ele_num[0]) {
+				if (k != ele_num[1] && k != ele_num[2]) {
+					continue;
+				}
+			}
+		}
+		if (k == guess_answer[FIRST]) {
+			continue;
+		}
       if(num[k].middle==NO) continue;
       if(temp_middle!=10) {
         if(k==temp_middle) continue;
@@ -1564,10 +1555,21 @@ void checkGame(struct num *num, struct record *record, int count, int *round_str
         }
       }
     }
-
+	if (guess_answer[LAST] == guess_answer[FIRST] || guess_answer[LAST] == guess_answer[MIDDLE]) {
+		guess_answer[LAST] = 10;
+	}
     for(int k=0; k<=9; k++) {
       // last
-      if(guess_answer[FIRST]==k || guess_answer[MIDDLE]==k) continue;
+		if (isThreeMode == OK) {
+			if (k != ele_num[0]) {
+				if (k != ele_num[1] && k != ele_num[2]) {
+					continue;
+				}
+			}
+		}
+		if (guess_answer[FIRST] == k || guess_answer[MIDDLE] == k) {
+			continue;
+		}
       if(num[k].last==NO) continue;
       if(guess_answer[LAST]!=10) {
         if(num[k].last!=NO && num[guess_answer[LAST]].last>num[k].last )  guess_answer[LAST]=k;
@@ -1598,149 +1600,233 @@ void checkGame(struct num *num, struct record *record, int count, int *round_str
   int same_cnt=0;
   int progress_code=1; // 첫번째수 부터 하니까
   int pass_code=0;
+  int noContinue = 0;
   int first_entered=0; // 첫번쨰 대입후 1로 변환
   int* recent_changed;
   recent_changed=(int*)malloc(sizeof(int)*count);
   for(int p=(count-1); p>=0; p--) {
     recent_changed[p]=10;
   }
-
 while(loop!=0) {
   unsigned int guess_num = guess_answer[FIRST]*100+guess_answer[MIDDLE]*10+guess_answer[LAST];
   unsigned int record_num = record[loop].first*100+record[loop].middle*10+record[loop].last;
-  printf("%d,  %d\n", guess_num, record_num);
-    if(guess_num==record_num) {
-      if(progress_code==1) {
-        for(int i=9; i!=0; i--) {
-          if(i==record[loop].first) continue;
-          if(i==record[loop].middle) continue;
-          if(i==record[loop].last) continue;
-          if(num[i].first==NO) continue;
-          if(first_entered==0) {
-            guess_answer[FIRST]=i;
-            recent_changed[same_cnt]=i;
-            first_entered=1;
-          }
-          if(pass_code==0) {
-            if(num[guess_answer[FIRST]].first>num[i].first) {
-              guess_answer[FIRST]=i;
-              recent_changed[same_cnt]=i;
-            }
-          }
-          else {
-            //if(num[guess_answer[FIRST]].first>=num[i].first) {
-              guess_answer[FIRST]=i;
-              recent_changed[same_cnt]=i;
-            //}
-          }
-        }
-        for(int j=same_cnt; j!=0; j--) {
-          if(guess_answer[FIRST]==recent_changed[same_cnt] || recent_changed[same_cnt]==10 ) {
-            progress_code=2; // 2번쨰수로
-            same_cnt=0;
-            first_entered=0;
-            free(recent_changed);
-            recent_changed=(int*)malloc(sizeof(int)*count);
-            for(int p = (count - 1); p>=0; p--) {
-              recent_changed[p]=10;
-            }
-            break;
-          }
-        }
-        if(progress_code==1)
-          same_cnt++;
-        loop=count;
-        continue;
-      }
-      if(progress_code==2) {
-        for(int i=0; i<10; i++) {
-          if(i==record[loop].first) continue;
-          if(i==record[loop].middle) continue;
-          if(i==record[loop].last) continue;
-          if(num[i].middle==NO) continue;
-          if(first_entered==0) {
-            guess_answer[MIDDLE]=i;
-            recent_changed[same_cnt]=i;
-            first_entered=1;
-          }
-          if(pass_code==0) {
-            if(num[guess_answer[MIDDLE]].middle>num[i].middle) {
-              guess_answer[MIDDLE]=i;
-              recent_changed[same_cnt]=i;
-            }
-          }
-          else {
-            //if(num[guess_answer[MIDDLE]].middle>=num[i].middle) {
-              guess_answer[MIDDLE]=i;
-              recent_changed[same_cnt]=i;
-            //}
-          }
-        }
-        for(int j=same_cnt; j!=0; j--) {
-          if(guess_answer[MIDDLE]==recent_changed[same_cnt] || recent_changed[same_cnt]==10) {
-            progress_code=3; // 3번쨰수로
-            same_cnt=0;
-            first_entered=0;
-            free(recent_changed);
-            recent_changed=(int*)malloc(sizeof(int)*count);
-            for(int p = (count - 1); p>=0; p--) {
-              recent_changed[p]=10;
-            }
-            break;
-          }
-        }
-        if(progress_code==2)
-          same_cnt++;
-        loop=count;
-        continue;
-      }
-      if(progress_code==3) {
-        for(int i=0; i<10; i++) {
-          if(i==record[loop].first) continue;
-          if(i==record[loop].middle) continue;
-          if(i==record[loop].last) continue;
-          if(num[i].last==NO) continue;
-          if(first_entered==0) {
-            guess_answer[LAST]=i;
-            recent_changed[same_cnt]=i;
-            first_entered=1;
-          }
-          if(pass_code==0) {
-            if(num[guess_answer[LAST]].last>num[i].last) {
-              guess_answer[LAST]=i;
-              recent_changed[same_cnt]=i;
-            }
-          }
-          else {
-            //if(num[guess_answer[LAST]].last>=num[i].last) {
-              guess_answer[LAST]=i;
-              recent_changed[same_cnt]=i;
-            //}
-          }
-        }
-        for(int j=same_cnt; j!=0; j--) {
-          if(guess_answer[LAST]==recent_changed[same_cnt] || recent_changed[same_cnt]==10) {
-            progress_code=1; 
-            pass_code=1;
-            same_cnt=0;
-            first_entered=0;
-            free(recent_changed);
-            recent_changed=(int*)malloc(sizeof(int)*count);
-            for(int p = (count - 1); p>=0; p--) {
-              recent_changed[p]=10;
-            }
-            break;
-          }
-        }
-        if(progress_code==3)
-          same_cnt++;
-        loop=count;
-        continue;
-      }
-      if(progress_code==0) {
-        printf("ERROR OCCURED\n");
-      }
-    }
+  if (guess_num == record_num) {
+	  if (progress_code == 1) {
+		  noContinue = 0;
+		  for (int i = 9; i != 0; i--) {
+			  if (isThreeMode == OK) {
+				  if (i != ele_num[0]) {
+					  if (i != ele_num[1] && i != ele_num[2]) {
+						  continue;
+					  }
+				  }
+			  }
+			  if (isThreeMode != OK) {
+				  if (i == record[loop].first) continue;
+				  if (i == record[loop].middle) continue;
+				  if (i == record[loop].last) continue;
+			  }
+			  if (num[i].first == NO) continue;
+			  if (first_entered == 0) {
+				  guess_answer[FIRST] = i;
+				  recent_changed[same_cnt] = i;
+				  first_entered = 1;
+			  }
+			  if (pass_code == 0 && isThreeMode != OK) {
+				  if (num[guess_answer[FIRST]].first>num[i].first) {
+					  guess_answer[FIRST] = i;
+					  recent_changed[same_cnt] = i;
+				  }
+			  }
+			  else {
+				  guess_answer[FIRST] = i;
+				  recent_changed[same_cnt] = i;
+			  }
+		  }
+		  for (int j = same_cnt; j != 0; j--) {
+			  if (isThreeMode == OK) {
+				  if (j != ele_num[0]) {
+					  if (j != ele_num[1] && j != ele_num[2]) {
+						  continue;
+					  }
+				  }
+			  }
+			  if (guess_answer[FIRST] == recent_changed[same_cnt] || recent_changed[same_cnt] == 10) {
+				  progress_code = 2; // 2번쨰수로
+				  same_cnt = 0;
+				  first_entered = 0;
+				  free(recent_changed);
+				  recent_changed = (int*)malloc(sizeof(int)*count);
+				  for (int p = (count - 1); p >= 0; p--) {
+					  recent_changed[p] = 10;
+				  }
+				  break;
+			  }
+		  }
+		  if (guess_answer[MIDDLE] == guess_answer[LAST] || guess_answer[FIRST] == guess_answer[MIDDLE]) {
+			  progress_code = 2; // 2번쨰수로
+			  same_cnt = 0;
+			  first_entered = 0;
+			  noContinue = 1;
+			  free(recent_changed);
+			  recent_changed = (int*)malloc(sizeof(int)*count);
+			  for (int p = (count - 1); p >= 0; p--) {
+				  recent_changed[p] = 10;
+			  }
+		  }
+		  if (progress_code == 1)
+			  same_cnt++;
+		  loop = count;
+		  if(noContinue==0) 
+			continue;
+	  }
+	  if (progress_code == 2) {
+		  noContinue = 0;
+		  for (int i = 0; i<10; i++) {
+			  if (isThreeMode == OK) {
+				  if (i != ele_num[0]) {
+					  if (i != ele_num[1] && i != ele_num[2]) {
+						  continue;
+					  }
+				  }
+			  }
+			  if (i == guess_answer[FIRST]) continue;
+			  if (isThreeMode != OK) {
+				  if (i == record[loop].first) continue;
+				  if (i == record[loop].middle) continue;
+				  if (i == record[loop].last) continue;
+			  }
+			  if (num[i].middle == NO) continue;
+			  if (first_entered == 0) {
+				  guess_answer[MIDDLE] = i;
+				  recent_changed[same_cnt] = i;
+				  first_entered = 1;
+			  }
+			  if (pass_code == 0 && isThreeMode != OK) {
+				  if (num[guess_answer[MIDDLE]].middle>num[i].middle) {
+					  guess_answer[MIDDLE] = i;
+					  recent_changed[same_cnt] = i;
+				  }
+			  }
+			  else {
+				  guess_answer[MIDDLE] = i;
+				  recent_changed[same_cnt] = i;
+			  }
+		  }
+		  for (int j = same_cnt; j != 0; j--) {
+			  if (isThreeMode == OK) {
+				  if (j != ele_num[0]) {
+					  if (j != ele_num[1] && j != ele_num[2]) {
+						  continue;
+					  }
+				  }
+			  }
+			  if (guess_answer[MIDDLE] == recent_changed[same_cnt] || recent_changed[same_cnt] == 10) {
+				  progress_code = 3; // 3번쨰수로
+				  same_cnt = 0;
+				  first_entered = 0;
+				  free(recent_changed);
+				  recent_changed = (int*)malloc(sizeof(int)*count);
+				  for (int p = (count - 1); p >= 0; p--) {
+					  recent_changed[p] = 10;
+				  }
+				  break;
+			  }
+		  }
+		  if (guess_answer[LAST] == guess_answer[MIDDLE] || guess_answer[FIRST] == guess_answer[LAST]) {
+			  progress_code = 3; // 3번쨰수로
+			  same_cnt = 0;
+			  first_entered = 0;
+			  noContinue = 1;
+			  free(recent_changed);
+			  recent_changed = (int*)malloc(sizeof(int)*count);
+			  for (int p = (count - 1); p >= 0; p--) {
+				  recent_changed[p] = 10;
+			  }
+		  }
+		  if (progress_code == 2)
+			  same_cnt++;
+		  loop = count;
+		  if (noContinue == 0)
+			  continue;
+	  }
+	  if (progress_code == 3) {
+		  noContinue = 0;
+		  for (int i = 0; i<10; i++) {
+			  if (isThreeMode == OK) {
+				  if (i != ele_num[0]) {
+					  if (i != ele_num[1] && i != ele_num[2]) {
+						  continue;
+					  }
+				  }
+			  }
+			  if (i == guess_answer[FIRST]) continue;
+			  if (i == guess_answer[MIDDLE]) continue;
+			  if (isThreeMode != OK) {
+				  if (i == record[loop].first) continue;
+				  if (i == record[loop].middle) continue;
+				  if (i == record[loop].last) continue;
+			  }
+			  if (num[i].last == NO) continue;
+			  if (first_entered == 0) {
+				  guess_answer[LAST] = i;
+				  recent_changed[same_cnt] = i;
+				  first_entered = 1;
+			  }
+			  if (pass_code == 0 && isThreeMode != OK) {
+				  if (num[guess_answer[LAST]].last>num[i].last) {
+					  guess_answer[LAST] = i;
+					  recent_changed[same_cnt] = i;
+				  }
+			  }
+			  else {
+				  guess_answer[LAST] = i;
+				  recent_changed[same_cnt] = i;
+			  }
+		  }
+		  for (int j = same_cnt; j != 0; j--) {
+			  if (isThreeMode == OK) {
+				  if (j != ele_num[0]) {
+					  if (j != ele_num[1] && j != ele_num[2]) {
+						  continue;
+					  }
+				  }
+			  }
+			  if (guess_answer[LAST] == recent_changed[same_cnt] || recent_changed[same_cnt] == 10) {
+				  progress_code = 1;
+				  pass_code = 1;
+				  same_cnt = 0;
+				  first_entered = 0;
+				  free(recent_changed);
+				  recent_changed = (int*)malloc(sizeof(int)*count);
+				  for (int p = (count - 1); p >= 0; p--) {
+					  recent_changed[p] = 10;
+				  }
+				  break;
+			  }
+		  }
+		  if (guess_answer[LAST] == guess_answer[FIRST] || guess_answer[FIRST] == guess_answer[MIDDLE]) {
+			  progress_code = 1;
+			  pass_code = 1;
+			  same_cnt = 0;
+			  first_entered = 0;
+			  noContinue = 1;
+			  free(recent_changed);
+			  recent_changed = (int*)malloc(sizeof(int)*count);
+			  for (int p = (count - 1); p >= 0; p--) {
+				  recent_changed[p] = 10;
+			  }
+		  }
+		  if (progress_code == 3)
+			  same_cnt++;
+		  loop = count;		  
+		  if (noContinue == 0)
+			  continue;
+	  }
+	  if (progress_code == 0) {
+		  printf("ERROR OCCURED\n");
+	  }
+  }
     loop--;
 }
   free(recent_changed);
