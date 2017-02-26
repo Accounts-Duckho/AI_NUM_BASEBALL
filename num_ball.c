@@ -1416,7 +1416,7 @@ void startGame(int* guess_answer) {
   }
   return;
 }
-
+// HACK: All of checkGame function is danger...
 void checkGame(struct num *num, struct record *record, int count, int *round_strike, int *round_ball) {
 	int isThreeMode = NOT;
 	static int ele_num[3];
