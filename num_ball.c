@@ -185,7 +185,7 @@ void startGame(int* guess_answer) {
 	}
     result_sum=round_strike[count]+round_ball[count];
     if(result_sum<=3 && result_sum>=0) {
-      if(3>=round_strike[count] && 3>=round_ball[count]) {
+      if(round_strike[count]<=3 && round_ball[count]<=3) {
         if(round_strike[count]>=0 && round_ball[count]>=0) {
 			if (round_strike[count] == 3) {
 				initialize(num, record, &count, round_strike, round_ball);
@@ -194,8 +194,6 @@ void startGame(int* guess_answer) {
 			}
           else if(round_strike[count]==2) {
             if(round_ball[count]==1) {
-              // WE get 3 number all : THIS COULD BE MORE PERFECT..
-              // 0~9
               num[1].first=VERYHIGH;
               num[1].middle=LOW;
               num[1].last=LOW;
@@ -251,8 +249,6 @@ void startGame(int* guess_answer) {
           }
           else if(round_strike[count]==1) {
             if(round_ball[count]==2) {
-              // WE get 3 number all : THIS COULD BE MORE PERFECT..
-              // 0~9
               num[1].first=NORMAL;
               num[1].middle=HIGH;
               num[1].last=HIGH;
@@ -322,8 +318,6 @@ void startGame(int* guess_answer) {
           }
           else if(round_strike[count]==0) {
             if(round_ball[count]==3) {
-              // WE get 3 number all : THIS COULD BE MORE PERFECT..
-              // 0~9
               num[1].first=NO;
               num[1].middle=VERYHIGH;
               num[1].last=VERYHIGH;
@@ -507,7 +501,7 @@ void startGame(int* guess_answer) {
 	}
     result_sum=round_strike[count]+round_ball[count];
     if(result_sum<=3 && result_sum>=0) {
-      if(3>=round_strike[count] && 3>=round_ball[count]) {
+      if(round_strike[count]<=3 && round_ball[count]<=3) {
         if(round_strike[count]>=0 && round_ball[count]>=0) {
           if(round_strike[count]==3) {
 			  initialize(num, record, &count, round_strike, round_ball);
@@ -516,8 +510,6 @@ void startGame(int* guess_answer) {
 		  }
           else if(round_strike[count]==2) {
             if(round_ball[count]==1) {
-              // WE get 3 number all : THIS COULD BE MORE PERFECT..
-              // 0~9
               evaluate(&num[2].first, VERYHIGH);
               evaluate(&num[2].middle, LOW);
               evaluate(&num[2].last, LOW);
@@ -570,8 +562,6 @@ void startGame(int* guess_answer) {
           }
           else if(round_strike[count]==1) {
             if(round_ball[count]==2) {
-              // WE get 3 number all : THIS COULD BE MORE PERFECT..
-              // 0~9
               evaluate(&num[2].first, NORMAL);
               evaluate(&num[2].middle, HIGH);
               evaluate(&num[2].last, HIGH);
@@ -638,8 +628,6 @@ void startGame(int* guess_answer) {
           }
           else if(round_strike[count]==0) {
             if(round_ball[count]==3) {
-              // WE get 3 number all : THIS COULD BE MORE PERFECT..
-              // 0~9
               evaluate(&num[2].first, NO);
               evaluate(&num[2].middle, VERYHIGH);
               evaluate(&num[2].last, VERYHIGH);
@@ -819,7 +807,7 @@ void startGame(int* guess_answer) {
 	}
     result_sum=round_strike[count]+round_ball[count];
     if(result_sum<=3 && result_sum>=0) {
-      if(3>=round_strike[count] && 3>=round_ball[count]) {
+      if(round_strike[count]<=3 && round_ball[count]<=3) {
         if(round_strike[count]>=0 && round_ball[count]>=0) {
           if(round_strike[count]==3) {
 			  initialize(num, record, &count, round_strike, round_ball);
@@ -828,8 +816,6 @@ void startGame(int* guess_answer) {
 		  }
           else if(round_strike[count]==2) {
             if(round_ball[count]==1) {
-              // WE get 3 number all : THIS COULD BE MORE PERFECT..
-              // 0~9
               evaluate(&num[3].first, VERYHIGH);
               evaluate(&num[3].middle, LOW);
               evaluate(&num[3].last, LOW);
@@ -882,8 +868,6 @@ void startGame(int* guess_answer) {
           }
           else if(round_strike[count]==1) {
             if(round_ball[count]==2) {
-              // WE get 3 number all : THIS COULD BE MORE PERFECT..
-              // 0~9
               evaluate(&num[3].first, NORMAL);
               evaluate(&num[3].middle, HIGH);
               evaluate(&num[3].last, HIGH);
@@ -950,8 +934,6 @@ void startGame(int* guess_answer) {
           }
           else if(round_strike[count]==0) {
             if(round_ball[count]==3) {
-              // WE get 3 number all : THIS COULD BE MORE PERFECT..
-              // 0~9
               evaluate(&num[3].first, NO);
               evaluate(&num[3].middle, VERYHIGH);
               evaluate(&num[3].last, VERYHIGH);
@@ -1148,7 +1130,7 @@ void startGame(int* guess_answer) {
 	}
     result_sum=round_strike[count]+round_ball[count];
     if(result_sum<=3 && result_sum>=0) {
-      if(3>=round_strike[count] && 3>=round_ball[count]) {
+      if(round_strike[count]<=3 && round_ball[count]<=3) {
         if(round_strike[count]>=0 && round_ball[count]>=0) {
           if(round_strike[count]==3) {
 			  initialize(num, record, &count, round_strike, round_ball);
@@ -1157,8 +1139,6 @@ void startGame(int* guess_answer) {
 		  }
           else if(round_strike[count]==2) {
             if(round_ball[count]==1) {
-              // WE get 3 number all : THIS COULD BE MORE PERFECT..
-              // 0~9
               evaluate(&num[guess_answer[FIRST]].first, VERYHIGH);
               evaluate(&num[guess_answer[FIRST]].middle, LOW);
               evaluate(&num[guess_answer[FIRST]].last, LOW);
@@ -1217,8 +1197,6 @@ void startGame(int* guess_answer) {
           }
           else if(round_strike[count]==1) {
             if(round_ball[count]==2) {
-              // WE get 3 number all : THIS COULD BE MORE PERFECT..
-              // 0~9
               evaluate(&num[guess_answer[FIRST]].first, NORMAL);
               evaluate(&num[guess_answer[FIRST]].middle, HIGH);
               evaluate(&num[guess_answer[FIRST]].last, HIGH);
@@ -1291,8 +1269,6 @@ void startGame(int* guess_answer) {
           }
           else if(round_strike[count]==0) {
             if(round_ball[count]==3) {
-              // WE get 3 number all : THIS COULD BE MORE PERFECT..
-              // 0~9
               evaluate(&num[guess_answer[FIRST]].first, NO);
               evaluate(&num[guess_answer[FIRST]].middle, VERYHIGH);
               evaluate(&num[guess_answer[FIRST]].last, VERYHIGH);
